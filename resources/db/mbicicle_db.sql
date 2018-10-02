@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 02 2018 г., 14:20
+-- Время создания: Окт 02 2018 г., 23:54
 -- Версия сервера: 5.5.25
 -- Версия PHP: 5.3.13
 
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `book` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(70) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Дамп данных таблицы `book`
@@ -59,7 +59,8 @@ CREATE TABLE IF NOT EXISTS `book` (
 
 INSERT INTO `book` (`id`, `name`) VALUES
 (1, 'Конкуренты'),
-(2, 'Алмазный меч, Деревянный меч');
+(2, 'Алмазный меч, Деревянный меч'),
+(3, 'Лабиринт отражений');
 
 -- --------------------------------------------------------
 
@@ -74,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `books_authors` (
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`),
   KEY `idBook` (`idBook`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Дамп данных таблицы `books_authors`
@@ -82,7 +83,19 @@ CREATE TABLE IF NOT EXISTS `books_authors` (
 
 INSERT INTO `books_authors` (`id`, `idAuthor`, `idBook`) VALUES
 (1, 1, 1),
-(2, 2, 2);
+(2, 2, 2),
+(3, 1, 3);
+
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `books_authors`
+--
+ALTER TABLE `books_authors`
+  ADD CONSTRAINT `books_authors_ibfk_2` FOREIGN KEY (`idBook`) REFERENCES `book` (`id`),
+  ADD CONSTRAINT `books_authors_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `author` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
