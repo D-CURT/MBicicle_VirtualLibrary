@@ -11,6 +11,12 @@ public class Author {
     public Author() {
     }
 
+    public Author(int id, String name, String surname) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+    }
+
     public Author(String name, String surname, List<Book> books) {
         this.name = name;
         this.surname = surname;

@@ -7,4 +7,13 @@ public class Constants {
     public static final String PASSWORD = "";
 
     public static final String EMPTY = "";
+
+    //===========   SQL   ============
+
+    public static final String FIND_AUTHOR = "SELECT * FROM author WHERE name=? AND surname=?";
+    public static final String FIND_BOOK = "SELECT * FROM book WHERE name=?";
+    public static final String FIND_BOOK_BY_AUTHOR = "SELECT idBook FROM books_authors WHERE idAuthor=?";
+
+    public static final int FIRST_ARGUMENT = 1;
+    public static final int SECOND_ARGUMENT = 2;
 }

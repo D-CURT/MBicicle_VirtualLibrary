@@ -10,6 +10,11 @@ public class Book {
     public Book() {
     }
 
+    public Book(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Book(String name, List<Author> authors) {
         this.name = name;
         this.authors = authors;
