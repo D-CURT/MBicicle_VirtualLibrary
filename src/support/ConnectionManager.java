@@ -25,9 +25,13 @@ public class ConnectionManager {
         return DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
     }
 
-    public static void closeResultSet(ResultSet set) throws SQLException {
+    public static void closeResultSet(ResultSet set) {
         if (set != null) {
-            set.close();
+            try {
+                set.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

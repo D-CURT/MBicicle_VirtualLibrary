@@ -11,45 +11,58 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static support.constants.Constants.*;
 
 public class DBImplementation implements DAO {
-    private static Connection connection;
-
-    static {
-        try {
-            connection = ConnectionManager.createConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
-    public Author getAuthor(String name, String surname) {
+    public Author getAuthor(String name, String surname) throws SQLException{
         int idAuthor = 0;
+        ResultSet set = null;
         List<Book> books = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR)) {
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR)) {
 
             statement.setString(FIRST_ARGUMENT, name);
             statement.setString(SECOND_ARGUMENT, surname);
             System.out.println(statement);
 
-            ResultSet set = statement.executeQuery();
+            set = statement.executeQuery();
             idAuthor = set.next() ? set.getInt(FIRST_ARGUMENT) : idAuthor;
 
-            for (Integer id: getBooksId_byAuthor(idAuthor)) {
-                books.add(new Book(id, getBookNameByID(id)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            for (Integer id: fromPair(idAuthor, FIND_BOOK_BY_AUTHOR))
+                books.add(getBookByID(id));
+
+            return new Author(idAuthor, name, surname, books);
+        } finally {
+            ConnectionManager.closeResultSet(set);
         }
-        return new Author(idAuthor, name, surname, books);
     }
 
     @Override
-    public Book getBook(String name) {
-        return null;
+    public Book getBook(String name) throws SQLException {
+        int idBook = 0;
+        ResultSet set = null;
+        List<Author> authors = new ArrayList<>();
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BOOK)) {
+
+            statement.setString(FIRST_ARGUMENT, name);
+            System.out.println(statement);
+
+            set = statement.executeQuery();
+            idBook = set.next() ? set.getInt(FIRST_ARGUMENT) : idBook;
+
+            for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK)) {
+                //authors.add(new Author(id, getBookNameByID(id)));
+            }
+            return null;
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
+
     }
 
     @Override
@@ -62,31 +75,37 @@ public class DBImplementation implements DAO {
         return false;
     }
 
-    private List<Integer> getBooksId_byAuthor(int idAuthor) {
+    private List<Integer> fromPair(int id, String sgl) throws SQLException {
         List<Integer> list = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(FIND_BOOK_BY_AUTHOR)) {
-
-            statement.setInt(FIRST_ARGUMENT, idAuthor);
-            System.out.println(statement);
-            ResultSet set = statement.executeQuery();
-            while (set.next())
-                list.add(set.getInt(FIRST_ARGUMENT));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    private String getBookNameByID(int id) {
-        try (PreparedStatement statement = connection.prepareStatement(FIND_BOOK_NAME_BY_ID)) {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(sgl)) {
 
             statement.setInt(FIRST_ARGUMENT, id);
             System.out.println(statement);
-            ResultSet result = statement.executeQuery();
-            return result.next() ? result.getString(FIRST_ARGUMENT) : EMPTY;
+            set = statement.executeQuery();
+            while (set.next())
+                list.add(set.getInt(FIRST_ARGUMENT));
+            return list;
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
+    }
+
+    private Book getBookByID(int id) throws SQLException {
+        ResultSet result = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BOOK_BY_ID)) {
+
+            statement.setInt(FIRST_ARGUMENT, id);
+            System.out.println(statement);
+            result = statement.executeQuery();
+            return result.next() ? new Book(result.getInt(FIRST_ARGUMENT), result.getString(SECOND_ARGUMENT)) : null;
         } catch (SQLException e) {
             e.printStackTrace();
-            return EMPTY;
+            return null;
+        } finally {
+            ConnectionManager.closeResultSet(result);
         }
     }
 
