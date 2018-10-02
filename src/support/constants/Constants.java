@@ -13,6 +13,7 @@ public class Constants {
     public static final String FIND_AUTHOR = "SELECT * FROM author WHERE name=? AND surname=?";
     public static final String FIND_BOOK = "SELECT * FROM book WHERE name=?";
     public static final String FIND_BOOK_BY_AUTHOR = "SELECT idBook FROM books_authors WHERE idAuthor=?";
+    public static final String FIND_BOOK_NAME_BY_ID = "SELECT name FROM book WHERE id=?";
 
     public static final int FIRST_ARGUMENT = 1;
     public static final int SECOND_ARGUMENT = 2;

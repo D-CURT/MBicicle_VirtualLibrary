@@ -28,21 +28,18 @@ public class DBImplementation implements DAO {
     @Override
     public Author getAuthor(String name, String surname) {
         int idAuthor = 0;
-        int idBook;
-        String nameBook;
         List<Book> books = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR)) {
 
             statement.setString(FIRST_ARGUMENT, name);
             statement.setString(SECOND_ARGUMENT, surname);
+            System.out.println(statement);
 
-            ResultSet result = statement.executeQuery();
-            result = getBooksId_byAuthor(idAuthor = result.getInt(FIRST_ARGUMENT));
+            ResultSet set = statement.executeQuery();
+            idAuthor = set.next() ? set.getInt(FIRST_ARGUMENT) : idAuthor;
 
-            while (result.next()) {
-                idBook = result.getInt(FIRST_ARGUMENT);
-                nameBook = result.getString(SECOND_ARGUMENT);
-                books.add(new Book(idBook, nameBook));
+            for (Integer id: getBooksId_byAuthor(idAuthor)) {
+                books.add(new Book(id, getBookNameByID(id)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,16 +62,32 @@ public class DBImplementation implements DAO {
         return false;
     }
 
-    private ResultSet getBooksId_byAuthor(int idAuthor) {
-        ResultSet set = null;
+    private List<Integer> getBooksId_byAuthor(int idAuthor) {
+        List<Integer> list = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(FIND_BOOK_BY_AUTHOR)) {
 
             statement.setInt(FIRST_ARGUMENT, idAuthor);
-            set = statement.executeQuery();
+            System.out.println(statement);
+            ResultSet set = statement.executeQuery();
+            while (set.next())
+                list.add(set.getInt(FIRST_ARGUMENT));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return set;
+        return list;
+    }
+
+    private String getBookNameByID(int id) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BOOK_NAME_BY_ID)) {
+
+            statement.setInt(FIRST_ARGUMENT, id);
+            System.out.println(statement);
+            ResultSet result = statement.executeQuery();
+            return result.next() ? result.getString(FIRST_ARGUMENT) : EMPTY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return EMPTY;
+        }
     }
 
     private boolean insertAuthor(String name, String surname) {
