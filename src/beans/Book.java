@@ -37,4 +37,13 @@ public class Book {
     public List<Author> getAuthors() {
         return authors;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", authors=" + authors +
+                '}';
+    }
 }
