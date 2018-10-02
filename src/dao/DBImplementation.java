@@ -56,9 +56,9 @@ public class DBImplementation implements DAO {
             idBook = set.next() ? set.getInt(FIRST_ARGUMENT) : idBook;
 
             for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK)) {
-                //authors.add(new Author(id, getBookNameByID(id)));
+                authors.add(getAuthorById(id));
             }
-            return null;
+            return new Book(idBook, name, authors);
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -92,20 +92,29 @@ public class DBImplementation implements DAO {
         }
     }
 
+    private Author getAuthorById(int id) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR_BY_ID)) {
+            statement.setInt(FIRST_ARGUMENT, id);
+            set = statement.executeQuery();
+            return set.next() ? new Author(set.getInt(FIRST_ARGUMENT),
+                    set.getString(SECOND_ARGUMENT), set.getString(THIRD_ARGUMENT)) : null;
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
+    }
+
     private Book getBookByID(int id) throws SQLException {
-        ResultSet result = null;
+        ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_BOOK_BY_ID)) {
 
             statement.setInt(FIRST_ARGUMENT, id);
-            System.out.println(statement);
-            result = statement.executeQuery();
-            return result.next() ? new Book(result.getInt(FIRST_ARGUMENT), result.getString(SECOND_ARGUMENT)) : null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            set = statement.executeQuery();
+            return set.next() ? new Book(set.getInt(FIRST_ARGUMENT), set.getString(SECOND_ARGUMENT)) : null;
         } finally {
-            ConnectionManager.closeResultSet(result);
+            ConnectionManager.closeResultSet(set);
         }
     }
 
