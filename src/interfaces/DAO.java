@@ -10,5 +10,4 @@ public interface DAO {
     Book getBook(String name);
     boolean addAuthor(String name, String surname, List<Book> books);
     boolean addBook(String name, List<Author> authors);
-    boolean addAuthors_BooksLink(int idAuthor, int idBook);
 }
