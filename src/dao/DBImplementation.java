@@ -81,7 +81,7 @@ public class DBImplementation implements DAO {
         }
         List<Author> authors = new ArrayList<>();
         authors.add(a);
-        toPair(authors, books);
+        toPair(authors, books, true);
         return true;
     }
 
@@ -96,8 +96,12 @@ public class DBImplementation implements DAO {
         return false;
     }
 
-    private void toPair(List<Author> authors, List<Book> books) throws SQLException {
+    private void toPair(List<Author> authors, List<Book> books, boolean byAuthor) throws SQLException {
 
+    }
+
+    private boolean sizeCheck(int t1, int t2) throws SQLException {
+        return (t1 >= 1 && t2 >= 1);
     }
 
     private List<Integer> fromPair(int id, String sgl) throws SQLException {
