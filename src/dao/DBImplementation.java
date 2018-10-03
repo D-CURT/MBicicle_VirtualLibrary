@@ -2,6 +2,7 @@ package dao;
 
 import beans.Author;
 import beans.Book;
+import exceptions.DBSelectingException;
 import interfaces.DAO;
 import support.ConnectionManager;
 
@@ -18,7 +19,6 @@ public class DBImplementation implements DAO {
 
     @Override
     public Author getAuthor(String name, String surname) throws SQLException{
-        int idAuthor = 0;
         ResultSet set = null;
         List<Book> books = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -26,15 +26,18 @@ public class DBImplementation implements DAO {
 
             statement.setString(FIRST_ARGUMENT, name);
             statement.setString(SECOND_ARGUMENT, surname);
-            System.out.println(statement);
 
             set = statement.executeQuery();
-            idAuthor = set.next() ? set.getInt(FIRST_ARGUMENT) : idAuthor;
 
-            for (Integer id: fromPair(idAuthor, FIND_BOOK_BY_AUTHOR))
-                books.add(getBookByID(id));
+            if (set.next()) {
+                int idAuthor = set.getInt(FIRST_ARGUMENT);
 
-            return new Author(idAuthor, name, surname, books);
+                for (Integer id: fromPair(idAuthor, FIND_BOOK_BY_AUTHOR))
+                    books.add(getBookByID(id));
+
+                return new Author(idAuthor, name, surname, books);
+            }
+            throw new DBSelectingException();
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -42,7 +45,6 @@ public class DBImplementation implements DAO {
 
     @Override
     public Book getBook(String name) throws SQLException {
-        int idBook = 0;
         ResultSet set = null;
         List<Author> authors = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -52,19 +54,28 @@ public class DBImplementation implements DAO {
             System.out.println(statement);
 
             set = statement.executeQuery();
-            idBook = set.next() ? set.getInt(FIRST_ARGUMENT) : idBook;
+            if (set.next()) {
+                int idBook = set.getInt(FIRST_ARGUMENT);
 
-            for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK))
-                authors.add(getAuthorById(id));
-            return new Book(idBook, name, authors);
+                for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK))
+                    authors.add(getAuthorById(id));
+                return new Book(idBook, name, authors);
+            }
+            throw new DBSelectingException();
         } finally {
             ConnectionManager.closeResultSet(set);
         }
-
     }
 
     @Override
-    public boolean addAuthor(String name, String surname, List<Book> books) {
+    public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
+
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
         return false;
     }
 
