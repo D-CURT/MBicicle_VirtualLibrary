@@ -32,10 +32,11 @@ public class DBImplementation implements DAO {
             if (set.next()) {
                 int idAuthor = set.getInt(FIRST_ARGUMENT);
 
+
                 for (Integer id: fromPair(idAuthor, FIND_BOOK_BY_AUTHOR))
                     books.add(getBookByID(id));
 
-                return new Author(idAuthor, name, surname, books);
+                return new Author(idAuthor, name, surname, books.size() > 0 ? books : null);
             }
             return null;
         } finally {
@@ -59,7 +60,7 @@ public class DBImplementation implements DAO {
 
                 for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK))
                     authors.add(getAuthorById(id));
-                return new Book(idBook, name, authors);
+                return new Book(idBook, name, authors.size() > 0 ? authors : null);
             }
             return null;
         } finally {
@@ -69,8 +70,12 @@ public class DBImplementation implements DAO {
 
     @Override
     public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
-        insertAuthor(name, surname);
-        return false;
+        Author a;
+        if ((a = getAuthor(name, surname)) == null) {
+            insertAuthor(name, surname);
+            a = getAuthor(name, surname);
+        } else return false;
+        return true;
     }
 
     @Override
