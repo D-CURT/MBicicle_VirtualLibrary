@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static support.constants.Constants.*;
 
@@ -55,9 +54,8 @@ public class DBImplementation implements DAO {
             set = statement.executeQuery();
             idBook = set.next() ? set.getInt(FIRST_ARGUMENT) : idBook;
 
-            for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK)) {
+            for (Integer id: fromPair(idBook, FIND_AUTHOR_BY_BOOK))
                 authors.add(getAuthorById(id));
-            }
             return new Book(idBook, name, authors);
         } finally {
             ConnectionManager.closeResultSet(set);
