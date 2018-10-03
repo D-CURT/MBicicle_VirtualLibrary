@@ -20,6 +20,7 @@ public class Constants {
 
     //_INSERT   ----------------------
     public static final String INSERT_AUTHOR = "INSERT INTO author (name, surname) VALUES (?,?)";
+    public static final String INSERT_BOOK = "INSERT INTO book (name) VALUES (?)";
     //--------------------------------
 
     //_INDEX   -----------------------

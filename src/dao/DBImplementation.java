@@ -70,16 +70,20 @@ public class DBImplementation implements DAO {
 
     @Override
     public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
-        Author a;
-        if ((a = getAuthor(name, surname)) == null) {
-            insertAuthor(name, surname);
-            a = getAuthor(name, surname);
-        } else return false;
+        insertAuthor(name, surname);
+        Author a = getAuthor(name, surname);
+
         return true;
     }
 
     @Override
-    public boolean addBook(String name, List<Author> authors) {
+    public boolean addBook(String name, List<Author> authors) throws SQLException {
+        Book b;
+        if ((b = getBook(name)) == null) {
+            insertBook(name);
+            b = getBook(name);
+        }
+
         return false;
     }
 
@@ -127,20 +131,31 @@ public class DBImplementation implements DAO {
     }
 
     private void insertAuthor(String name, String surname) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
+        if (getAuthor(name, surname) == null) {
+            ResultSet set = null;
+            try (Connection connection = ConnectionManager.createConnection();
+                 PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
 
-            statement.setString(FIRST_ARGUMENT, name);
-            statement.setString(SECOND_ARGUMENT, surname);
-            statement.execute();
-        } finally {
-            ConnectionManager.closeResultSet(set);
+                statement.setString(FIRST_ARGUMENT, name);
+                statement.setString(SECOND_ARGUMENT, surname);
+                statement.execute();
+            } finally {
+                ConnectionManager.closeResultSet(set);
+            }
         }
     }
 
-    private boolean insertBook(String name) {
+    private void insertBook(String name) throws SQLException {
+        if (getBook(name) == null) {
+            ResultSet set = null;
+            try (Connection connection = ConnectionManager.createConnection();
+                 PreparedStatement statement = connection.prepareStatement(INSERT_BOOK)) {
 
-        return true;
+                statement.setString(FIRST_ARGUMENT, name);
+                statement.execute();
+            } finally {
+                ConnectionManager.closeResultSet(set);
+            }
+        }
     }
 }
