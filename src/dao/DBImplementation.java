@@ -37,7 +37,7 @@ public class DBImplementation implements DAO {
 
                 return new Author(idAuthor, name, surname, books);
             }
-            throw new DBSelectingException();
+            return null;
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -61,7 +61,7 @@ public class DBImplementation implements DAO {
                     authors.add(getAuthorById(id));
                 return new Book(idBook, name, authors);
             }
-            throw new DBSelectingException();
+            return null;
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -69,13 +69,7 @@ public class DBImplementation implements DAO {
 
     @Override
     public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
-
-        } finally {
-            ConnectionManager.closeResultSet(set);
-        }
+        insertAuthor(name, surname);
         return false;
     }
 
@@ -127,9 +121,17 @@ public class DBImplementation implements DAO {
         }
     }
 
-    private boolean insertAuthor(String name, String surname) {
+    private void insertAuthor(String name, String surname) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
 
-        return true;
+            statement.setString(FIRST_ARGUMENT, name);
+            statement.setString(SECOND_ARGUMENT, surname);
+            statement.execute();
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
     }
 
     private boolean insertBook(String name) {
