@@ -2,7 +2,6 @@ package dao;
 
 import beans.Author;
 import beans.Book;
-import exceptions.DBSelectingException;
 import interfaces.DAO;
 import support.ConnectionManager;
 
@@ -52,7 +51,6 @@ public class DBImplementation implements DAO {
              PreparedStatement statement = connection.prepareStatement(FIND_BOOK)) {
 
             statement.setString(FIRST_ARGUMENT, name);
-            System.out.println(statement);
 
             set = statement.executeQuery();
             if (set.next()) {
@@ -87,21 +85,60 @@ public class DBImplementation implements DAO {
 
     @Override
     public boolean addBook(String name, List<Author> authors) throws SQLException {
-        Book b;
-        if ((b = getBook(name)) == null) {
-            insertBook(name);
-            b = getBook(name);
+        insertBook(name);
+        Book b = getBook(name);
+        Author a;
+
+        for (int i = 0; i < authors.size(); i++) {
+            a = authors.get(i);
+            insertAuthor(a.getName(), a.getSurname());
+            authors.set(i, getAuthor(a.getName(), a.getSurname()));
         }
-
-        return false;
+        List<Book> books = new ArrayList<>();
+        books.add(b);
+        toPair(authors, books, false);
+        return true;
     }
 
-    private void toPair(List<Author> authors, List<Book> books, boolean byAuthor) throws SQLException {
+    private void toPair(List<Author> authors, List<Book> books, boolean byBook) throws SQLException {
 
+        if (byBook) {
+            for (Book b: books) {
+                insertPair(authors.get(0).getId(), b.getId());
+            }
+        } else {
+            for (Author a: authors) {
+                insertPair(a.getId(), books.get(0).getId());
+            }
+        }
     }
 
-    private boolean sizeCheck(int t1, int t2) throws SQLException {
-        return (t1 >= 1 && t2 >= 1);
+    private boolean getPair(int a, int b) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_PAIR)) {
+
+            statement.setInt(FIRST_ARGUMENT, a);
+            statement.setInt(SECOND_ARGUMENT, b);
+            return statement.executeQuery().next();
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
+    }
+
+    private void insertPair(int a, int b) throws SQLException {
+        if (!getPair(a, b)) {
+            ResultSet set = null;
+            try (Connection connection = ConnectionManager.createConnection();
+                 PreparedStatement statement = connection.prepareStatement(INSERT_PAIR)) {
+
+                statement.setInt(FIRST_ARGUMENT, a);
+                statement.setInt(SECOND_ARGUMENT, b);
+                statement.execute();
+            } finally {
+                ConnectionManager.closeResultSet(set);
+            }
+        }
     }
 
     private List<Integer> fromPair(int id, String sgl) throws SQLException {
@@ -111,7 +148,6 @@ public class DBImplementation implements DAO {
              PreparedStatement statement = connection.prepareStatement(sgl)) {
 
             statement.setInt(FIRST_ARGUMENT, id);
-            System.out.println(statement);
             set = statement.executeQuery();
             while (set.next())
                 list.add(set.getInt(FIRST_ARGUMENT));
