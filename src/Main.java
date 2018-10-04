@@ -20,8 +20,8 @@ public class Main {
             DAO out = new OutFactory().createOUT();
             System.out.println(out.getAuthor("Сергей", "Лукьяненко"));
             System.out.println(out.getBook("Конкуренты"));
-            System.out.println(in.addAuthor("Михаил", "Королюк", new ArrayList<>(Collections.singletonList(new Book("Cпасти СССР")))));
-            System.out.println(in.addBook("Колесо времени", new ArrayList<>(Collections.singletonList(new Author("Роберт", "Джордан")))));
+            in.addAuthor("Михаил", "Королюк", new ArrayList<>(Collections.singletonList(new Book("Cпасти СССР"))));
+            in.addBook("Колесо времени", new ArrayList<>(Collections.singletonList(new Author("Роберт", "Джордан"))));
             in.addAuthor("Артем","Каменистый", new ArrayList<>(Collections.singletonList(new Book("Практикантка"))));
         } catch (SQLException e) {
             e.printStackTrace();
