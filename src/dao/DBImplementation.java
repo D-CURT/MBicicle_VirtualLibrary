@@ -2,7 +2,6 @@ package dao;
 
 import beans.Author;
 import beans.Book;
-import interfaces.DAO;
 import support.ConnectionManager;
 
 import java.sql.Connection;
@@ -14,10 +13,10 @@ import java.util.List;
 
 import static support.constants.Constants.*;
 
-public abstract class DBImplementation implements DAO {
+abstract class DBImplementation {
 
-    @Override
-    public Author getAuthor(String name, String surname) throws SQLException{
+
+    static Author getAuthor(String name, String surname) throws SQLException{
         ResultSet set = null;
         List<Book> books = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -43,8 +42,7 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    @Override
-    public Book getBook(String name) throws SQLException {
+    static Book getBook(String name) throws SQLException {
         ResultSet set = null;
         List<Author> authors = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -66,8 +64,7 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    @Override
-    public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
+    static boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
         insertAuthor(name, surname);
         Author a = getAuthor(name, surname);
         Book b;
@@ -83,8 +80,7 @@ public abstract class DBImplementation implements DAO {
         return true;
     }
 
-    @Override
-    public boolean addBook(String name, List<Author> authors) throws SQLException {
+    static boolean addBook(String name, List<Author> authors) throws SQLException {
         insertBook(name);
         Book b = getBook(name);
         Author a;
@@ -100,7 +96,7 @@ public abstract class DBImplementation implements DAO {
         return true;
     }
 
-    private void toPair(List<Author> authors, List<Book> books, boolean byBook) throws SQLException {
+    private static void toPair(List<Author> authors, List<Book> books, boolean byBook) throws SQLException {
 
         if (byBook) {
             for (Book b: books) {
@@ -113,7 +109,7 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    private List<Integer> fromPair(int id, String sgl) throws SQLException {
+    private static List<Integer> fromPair(int id, String sgl) throws SQLException {
         List<Integer> list = new ArrayList<>();
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
@@ -129,20 +125,17 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    private boolean noPair(int a, int b) throws SQLException {
-        ResultSet set = null;
+    private static boolean noPair(int a, int b) throws SQLException {
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_PAIR)) {
 
             statement.setInt(FIRST_ARGUMENT, a);
             statement.setInt(SECOND_ARGUMENT, b);
             return !statement.executeQuery().next();
-        } finally {
-            ConnectionManager.closeResultSet(set);
         }
     }
 
-    private Author getAuthorById(int id) throws SQLException {
+    private static Author getAuthorById(int id) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR_BY_ID)) {
@@ -155,7 +148,7 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    private Book getBookByID(int id) throws SQLException {
+    private static Book getBookByID(int id) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_BOOK_BY_ID)) {
@@ -168,46 +161,37 @@ public abstract class DBImplementation implements DAO {
         }
     }
 
-    private void insertAuthor(String name, String surname) throws SQLException {
+    private static void insertAuthor(String name, String surname) throws SQLException {
         if (getAuthor(name, surname) == null) {
-            ResultSet set = null;
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
 
                 statement.setString(FIRST_ARGUMENT, name);
                 statement.setString(SECOND_ARGUMENT, surname);
                 statement.execute();
-            } finally {
-                ConnectionManager.closeResultSet(set);
             }
         }
     }
 
-    private void insertBook(String name) throws SQLException {
+    private static void insertBook(String name) throws SQLException {
         if (getBook(name) == null) {
-            ResultSet set = null;
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(INSERT_BOOK)) {
 
                 statement.setString(FIRST_ARGUMENT, name);
                 statement.execute();
-            } finally {
-                ConnectionManager.closeResultSet(set);
             }
         }
     }
 
-    private void insertPair(int a, int b) throws SQLException {
+    private static void insertPair(int a, int b) throws SQLException {
         if (noPair(a, b)) {
-            ResultSet set = null;
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(INSERT_PAIR)) {
 
                 statement.setInt(FIRST_ARGUMENT, a);
                 statement.setInt(SECOND_ARGUMENT, b);
                 statement.execute();
-            } finally {
-                ConnectionManager.closeResultSet(set);
             }
         }
     }

@@ -2,17 +2,18 @@ package dao;
 
 import beans.Author;
 import beans.Book;
+import interfaces.DAOout;
 
 import java.sql.SQLException;
 
-public class DBOut extends DBImplementation {
+public class DBOut implements DAOout {
     @Override
     public Author getAuthor(String name, String surname) throws SQLException {
-        return super.getAuthor(name, surname);
+        return DBImplementation.getAuthor(name, surname);
     }
 
     @Override
     public Book getBook(String name) throws SQLException {
-        return super.getBook(name);
+        return DBImplementation.getBook(name);
     }
 }
