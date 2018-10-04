@@ -1,6 +1,9 @@
 import beans.Author;
 import beans.Book;
 import dao.DBImplementation;
+import dao.DBIn;
+import dao.DBOut;
+import interfaces.DAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,11 +14,12 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            DBImplementation impl = new DBImplementation();
-            System.out.println(impl.getAuthor("Сергей", "Лукьяненко"));
-            System.out.println(impl.getBook("Конкуренты"));
-            System.out.println(impl.addAuthor("Михаил", "Королюк", new ArrayList<>(Collections.singletonList(new Book("Cпасти СССР")))));
-            System.out.println(impl.addBook("Колесо времени", new ArrayList<>(Collections.singletonList(new Author("Роберт", "Джордан")))));
+            DAO in = new DBIn();
+            DAO out = new DBOut();
+            System.out.println(out.getAuthor("Сергей", "Лукьяненко"));
+            System.out.println(out.getBook("Конкуренты"));
+            System.out.println(in.addAuthor("Михаил", "Королюк", new ArrayList<>(Collections.singletonList(new Book("Cпасти СССР")))));
+            System.out.println(in.addBook("Колесо времени", new ArrayList<>(Collections.singletonList(new Author("Роберт", "Джордан")))));
         } catch (SQLException e) {
             e.printStackTrace();
         }

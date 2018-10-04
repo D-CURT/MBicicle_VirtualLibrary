@@ -14,7 +14,7 @@ import java.util.List;
 
 import static support.constants.Constants.*;
 
-public class DBImplementation implements DAO {
+public abstract class DBImplementation implements DAO {
 
     @Override
     public Author getAuthor(String name, String surname) throws SQLException{
@@ -113,34 +113,6 @@ public class DBImplementation implements DAO {
         }
     }
 
-    private boolean getPair(int a, int b) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_PAIR)) {
-
-            statement.setInt(FIRST_ARGUMENT, a);
-            statement.setInt(SECOND_ARGUMENT, b);
-            return statement.executeQuery().next();
-        } finally {
-            ConnectionManager.closeResultSet(set);
-        }
-    }
-
-    private void insertPair(int a, int b) throws SQLException {
-        if (!getPair(a, b)) {
-            ResultSet set = null;
-            try (Connection connection = ConnectionManager.createConnection();
-                 PreparedStatement statement = connection.prepareStatement(INSERT_PAIR)) {
-
-                statement.setInt(FIRST_ARGUMENT, a);
-                statement.setInt(SECOND_ARGUMENT, b);
-                statement.execute();
-            } finally {
-                ConnectionManager.closeResultSet(set);
-            }
-        }
-    }
-
     private List<Integer> fromPair(int id, String sgl) throws SQLException {
         List<Integer> list = new ArrayList<>();
         ResultSet set = null;
@@ -152,6 +124,19 @@ public class DBImplementation implements DAO {
             while (set.next())
                 list.add(set.getInt(FIRST_ARGUMENT));
             return list;
+        } finally {
+            ConnectionManager.closeResultSet(set);
+        }
+    }
+
+    private boolean noPair(int a, int b) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_PAIR)) {
+
+            statement.setInt(FIRST_ARGUMENT, a);
+            statement.setInt(SECOND_ARGUMENT, b);
+            return !statement.executeQuery().next();
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -205,6 +190,21 @@ public class DBImplementation implements DAO {
                  PreparedStatement statement = connection.prepareStatement(INSERT_BOOK)) {
 
                 statement.setString(FIRST_ARGUMENT, name);
+                statement.execute();
+            } finally {
+                ConnectionManager.closeResultSet(set);
+            }
+        }
+    }
+
+    private void insertPair(int a, int b) throws SQLException {
+        if (noPair(a, b)) {
+            ResultSet set = null;
+            try (Connection connection = ConnectionManager.createConnection();
+                 PreparedStatement statement = connection.prepareStatement(INSERT_PAIR)) {
+
+                statement.setInt(FIRST_ARGUMENT, a);
+                statement.setInt(SECOND_ARGUMENT, b);
                 statement.execute();
             } finally {
                 ConnectionManager.closeResultSet(set);
