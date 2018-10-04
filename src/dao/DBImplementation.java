@@ -13,9 +13,7 @@ import java.util.List;
 
 import static support.constants.Constants.*;
 
-abstract class DBImplementation {
-
-
+class DBImplementation {
     static Author getAuthor(String name, String surname) throws SQLException{
         ResultSet set = null;
         List<Book> books = new ArrayList<>();
