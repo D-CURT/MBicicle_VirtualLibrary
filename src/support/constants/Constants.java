@@ -6,8 +6,6 @@ public class Constants {
     public static final String USER_NAME = "root";
     public static final String PASSWORD = "";
 
-    public static final String EMPTY = "";
-
     //===========   SQL   ============
     //_SELECT   ----------------------
     public static final String FIND_AUTHOR = "SELECT * FROM author WHERE name=? AND surname=?";
