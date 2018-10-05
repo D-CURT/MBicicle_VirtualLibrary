@@ -14,7 +14,7 @@ public class Main {
         try {
             DAOin in = new DBIn();
             DAOout out = new DBOut();
-            in.addAuthor("Роберт", "Джордан", new ArrayList<>(
+            in.addAuthor("Роберт Джордан", new ArrayList<>(
                     Arrays.asList(new Book("Око мира"),
                                   new Book("Великая охота"),
                                   new Book("Возражденный дракон"),

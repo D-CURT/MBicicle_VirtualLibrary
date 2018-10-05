@@ -5,27 +5,23 @@ import java.util.List;
 public class Author {
     private int id;
     private String name;
-    private String surname;
     private List<Book> books;
 
     public Author() {
     }
 
-    public Author(String name, String surname) {
+    public Author(String name) {
         this.name = name;
-        this.surname = surname;
     }
 
-    public Author(int id, String name, String surname) {
+    public Author(int id, String name) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
     }
 
-    public Author(int id, String name, String surname, List<Book> books) {
+    public Author(int id, String name,List<Book> books) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
         this.books = books;
     }
 
@@ -37,10 +33,6 @@ public class Author {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
     public List<Book> getBooks() {
         return books;
     }
@@ -50,7 +42,6 @@ public class Author {
         return "Author{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
                 ", books=" + books +
                 '}';
     }

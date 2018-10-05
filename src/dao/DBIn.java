@@ -10,8 +10,8 @@ import java.util.List;
 public class DBIn implements DAOin {
 
     @Override
-    public boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
-        return DBImplementation.addAuthor(name, surname, books);
+    public boolean addAuthor(String name, List<Book> books) throws SQLException {
+        return DBImplementation.addAuthor(name, books);
     }
 
     @Override

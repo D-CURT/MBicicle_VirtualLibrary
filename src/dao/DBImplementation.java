@@ -14,14 +14,13 @@ import java.util.List;
 import static support.constants.Constants.*;
 
 class DBImplementation {
-    static Author getAuthor(String name, String surname) throws SQLException{
+    static Author getAuthor(String name) throws SQLException{
         ResultSet set = null;
         List<Book> books = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR)) {
 
             statement.setString(FIRST_ARGUMENT, name);
-            statement.setString(SECOND_ARGUMENT, surname);
 
             set = statement.executeQuery();
 
@@ -32,7 +31,7 @@ class DBImplementation {
                 for (Integer id: fromPair(idAuthor, FIND_BOOK_BY_AUTHOR))
                     books.add(getBookByID(id));
 
-                return new Author(idAuthor, name, surname, books.size() > 0 ? books : null);
+                return new Author(idAuthor, name, books.size() > 0 ? books : null);
             }
             return null;
         } finally {
@@ -62,9 +61,9 @@ class DBImplementation {
         }
     }
 
-    static boolean addAuthor(String name, String surname, List<Book> books) throws SQLException {
-        insertAuthor(name, surname);
-        Author a = getAuthor(name, surname);
+    static boolean addAuthor(String name, List<Book> books) throws SQLException {
+        insertAuthor(name);
+        Author a = getAuthor(name);
         Book b;
 
         for (int i = 0; i < books.size(); i++) {
@@ -85,8 +84,8 @@ class DBImplementation {
 
         for (int i = 0; i < authors.size(); i++) {
             a = authors.get(i);
-            insertAuthor(a.getName(), a.getSurname());
-            authors.set(i, getAuthor(a.getName(), a.getSurname()));
+            insertAuthor(a.getName());
+            authors.set(i, getAuthor(a.getName()));
         }
         List<Book> books = new ArrayList<>();
         books.add(b);
@@ -140,7 +139,7 @@ class DBImplementation {
             statement.setInt(FIRST_ARGUMENT, id);
             set = statement.executeQuery();
             return set.next() ? new Author(set.getInt(FIRST_ARGUMENT),
-                    set.getString(SECOND_ARGUMENT), set.getString(THIRD_ARGUMENT)) : null;
+                    set.getString(SECOND_ARGUMENT)) : null;
         } finally {
             ConnectionManager.closeResultSet(set);
         }
@@ -159,13 +158,12 @@ class DBImplementation {
         }
     }
 
-    private static void insertAuthor(String name, String surname) throws SQLException {
-        if (getAuthor(name, surname) == null) {
+    private static void insertAuthor(String name) throws SQLException {
+        if (getAuthor(name) == null) {
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
 
                 statement.setString(FIRST_ARGUMENT, name);
-                statement.setString(SECOND_ARGUMENT, surname);
                 statement.execute();
             }
         }
