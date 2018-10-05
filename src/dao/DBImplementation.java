@@ -40,8 +40,10 @@ class DBImplementation {
                 for (Integer index: fromPair(id, section.getContentNamesSQL()))
                     contents.add(getContentByID(index, section.getNameByIDSQL()));
 
-                return section == AUTHOR ? new Author(id, name, contents.size() > 0 ? contents : null)
-                                         : new Book(id, name, contents.size() > 0 ? contents : null);
+                if (contents.size() == 0) contents = null;
+
+                return section == AUTHOR ? new Author(id, name, contents)
+                                         : new Book(id, name, contents);
             }
         } finally {
             ConnectionManager.closeResultSet(set);
