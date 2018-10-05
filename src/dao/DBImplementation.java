@@ -68,43 +68,43 @@ class DBImplementation {
         return (Book) get(name, BOOK);
     }
 
-    static boolean addAuthor(String name, List<String> bookNames) throws SQLException {
-        insert(name, AUTHOR);
-        List<Integer> authorsID =
-                new ArrayList<>(singletonList(
-                requireNonNull(get(name, AUTHOR)).getId()));
-        List<Integer> booksID = new ArrayList<>();
+    private static boolean add(String name, List<String> list, ContentSection section) throws SQLException {
+        insert(name, section);
+        List<Integer> one = new ArrayList<>(singletonList(
+                requireNonNull(get(name, section)).getId()));
+        List<Integer> listID = new ArrayList<>();
 
-        for (String s: bookNames) {
-            insert(s, BOOK);
-            booksID.add(requireNonNull(get(s, BOOK)).getId());
+        for (String s: list) {
+            insert(s, section == AUTHOR ? BOOK : AUTHOR);
+            listID.add(requireNonNull(get(s, section == AUTHOR ? BOOK : AUTHOR)).getId());
         }
 
-        toPair(authorsID, booksID, AUTHOR);
+        toPair(one, listID, section);
         return true;
     }
 
-    static boolean addBook(String name, List<Author> authors) throws SQLException {
-        /*insertBook(name);
-        Book b = getBook(name);
-        Author a;
+    static boolean addAuthor(String name, List<String> bookNames) throws SQLException {
+        return add(name, bookNames, AUTHOR);
+    }
 
-        for (int i = 0; i < authors.size(); i++) {
-            a = authors.get(i);
-            insertAuthor(a.getName());
-            authors.set(i, getAuthor(a.getName()));
-        }
-        List<Book> books = new ArrayList<>();
-        books.add(b);
-        toPair(authors, books, false);*/
-        return true;
+    static boolean addBook(String name, List<String> authorNames) throws SQLException {
+
+        return add(name, authorNames, BOOK);
     }
 
     private static void toPair(List<Integer> authors, List<Integer> books, ContentSection section) throws SQLException {
-            for (Integer id: section == AUTHOR ? books : authors) {
-                if (section == AUTHOR) insertPair(authors.get(0), id);
-                else insertPair(books.get(0), id);
+
+        if (section == AUTHOR) {
+            for (Integer id: books) {
+                insertPair(authors.get(0), id);
             }
+        } else {
+            for (Integer id: authors) {
+                insertPair(books.get(0), id);
+            }
+        }
+
+
     }
 
     private static List<Integer> fromPair(int id, String sgl) throws SQLException {

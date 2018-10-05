@@ -4,6 +4,10 @@ import dao.interfaces.DAOin;
 import dao.interfaces.DAOout;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static java.util.Collections.singletonList;
 
 public class Main {
 
@@ -28,6 +32,8 @@ public class Main {
                     ("Память света")));*/
             System.out.println(out.getAuthor("Роберт Джордан"));
             System.out.println(out.getBook("Практикантка"));
+            in.addBook("Клан", new ArrayList<>(Arrays.asList("Дмитрий Рус")));
+            in.addAuthor("Сергей Шолохов", new ArrayList<>(singletonList("Тихий дон")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
