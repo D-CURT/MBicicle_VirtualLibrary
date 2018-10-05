@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 public class DBOut implements DAOout {
     @Override
-    public Author getAuthor(String name, String surname) throws SQLException {
-        return DBImplementation.getAuthor(name, surname);
+    public Author getAuthor(String name) throws SQLException {
+        return DBImplementation.getAuthor(name);
     }
 
     @Override

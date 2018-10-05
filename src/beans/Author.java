@@ -1,12 +1,14 @@
 package beans;
 
+import interfaces.Content;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Author {
+public class Author implements Content {
     private int id;
     private String name;
-    private List<Book> books;
+    private List<String> books;
 
     public Author() {
     }
@@ -16,24 +18,25 @@ public class Author {
         this.name = name;
     }
 
-    public Author(int id, String name,List<Book> books) {
+    public Author(int id, String name,List<String> books) {
         this.id = id;
         this.name = name;
         this.books = books;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public List<String> getBooks() {
-        return books.stream()
-                    .map(Book::getName)
-                    .collect(Collectors.toList());
+    @Override
+    public List<String> getList() {
+        return books;
     }
 
     @Override
