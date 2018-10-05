@@ -2,7 +2,7 @@ package support.sections;
 
 import static support.constants.Constants.*;
 
-public enum ContentSection {
+public enum SQLSection {
     AUTHOR(FIND_AUTHOR,
            FIND_BOOK_BY_AUTHOR,
            FIND_BOOK_NAME_BY_ID,
@@ -17,9 +17,10 @@ public enum ContentSection {
     private final String nameByIDSQL;
     private final String insertionSQL;
 
-    ContentSection(String contentSQL, String contentNamesSQL, String nameByIDSQL, String insertionSQL) {
+    SQLSection(String contentSQL, String namesSQL,
+               String nameByIDSQL, String insertionSQL) {
         this.contentSQL = contentSQL;
-        this.contentNamesSQL = contentNamesSQL;
+        this.contentNamesSQL = namesSQL;
         this.nameByIDSQL = nameByIDSQL;
         this.insertionSQL = insertionSQL;
     }

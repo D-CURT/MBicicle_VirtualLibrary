@@ -1,8 +1,5 @@
 package dao.interfaces;
 
-import beans.Author;
-import beans.Book;
-
 import java.sql.SQLException;
 import java.util.List;
 
