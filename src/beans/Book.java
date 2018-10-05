@@ -1,6 +1,7 @@
 package beans;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Book {
     private int id;
@@ -38,8 +39,10 @@ public class Book {
         return name;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
+    public List<String> getAuthors() {
+        return authors.stream()
+                      .map(Author::getName)
+                      .collect(Collectors.toList());
     }
 
     @Override
