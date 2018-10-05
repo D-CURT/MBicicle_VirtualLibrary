@@ -1,9 +1,6 @@
 package beans;
 
-import interfaces.Content;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Book implements Content {
     private int id;

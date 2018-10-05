@@ -2,7 +2,7 @@ package dao;
 
 import beans.Author;
 import beans.Book;
-import interfaces.Content;
+import beans.Content;
 import support.ConnectionManager;
 import support.sections.ContentSection;
 
@@ -11,14 +11,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static support.constants.Constants.*;
 import static support.sections.ContentSection.AUTHOR;
 import static support.sections.ContentSection.BOOK;
 
 class DBImplementation {
+
+    /*private static ResultSet getResultSet(String sql) throws SQLException {
+        ResultSet set = null;
+        try (Connection connection = ConnectionManager.createConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(FIRST_ARGUMENT, name);
+
+            set = statement.executeQuery();
+        return set;
+    }*/
 
     private static Content get(String name, ContentSection section) throws SQLException {
         ResultSet set = null;
@@ -54,19 +68,19 @@ class DBImplementation {
         return (Book) get(name, BOOK);
     }
 
-    static boolean addAuthor(String name, List<Book> books) throws SQLException {
-        /*insertAuthor(name);
-        Content a = get(name, AUTHOR);
-        Book b;
+    static boolean addAuthor(String name, List<String> bookNames) throws SQLException {
+        insert(name, AUTHOR);
+        List<Integer> authorsID =
+                new ArrayList<>(singletonList(
+                requireNonNull(get(name, AUTHOR)).getId()));
+        List<Integer> booksID = new ArrayList<>();
 
-        for (int i = 0; i < books.size(); i++) {
-            b = books.get(i);
-            insertBook(b.getName());
-            books.set(i, getBook(b.getName()));
+        for (String s: bookNames) {
+            insert(s, BOOK);
+            booksID.add(requireNonNull(get(s, BOOK)).getId());
         }
-        List<Author> authors = new ArrayList<>();
-        authors.add(a);
-        toPair(authors, books, true);*/
+
+        toPair(authorsID, booksID, AUTHOR);
         return true;
     }
 
@@ -86,17 +100,11 @@ class DBImplementation {
         return true;
     }
 
-    private static void toPair(List<Author> authors, List<Book> books, boolean byBook) throws SQLException {
-
-        if (byBook) {
-            for (Book b: books) {
-                insertPair(authors.get(0).getId(), b.getId());
+    private static void toPair(List<Integer> authors, List<Integer> books, ContentSection section) throws SQLException {
+            for (Integer id: section == AUTHOR ? books : authors) {
+                if (section == AUTHOR) insertPair(authors.get(0), id);
+                else insertPair(books.get(0), id);
             }
-        } else {
-            for (Author a: authors) {
-                insertPair(a.getId(), books.get(0).getId());
-            }
-        }
     }
 
     private static List<Integer> fromPair(int id, String sgl) throws SQLException {
@@ -125,7 +133,7 @@ class DBImplementation {
         }
     }
 
-    private static Author getAuthorById(int id) throws SQLException {
+    /*private static Author getAuthorById(int id) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR_NAME_BY_ID)) {
@@ -136,7 +144,7 @@ class DBImplementation {
         } finally {
             ConnectionManager.closeResultSet(set);
         }
-    }
+    }*/
 
     private static String getContentByID(int id, String sql) throws SQLException {
         ResultSet set = null;
@@ -151,7 +159,7 @@ class DBImplementation {
         }
     }
 
-    private static Book getBookByID(int id) throws SQLException {
+    /*private static Book getBookByID(int id) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_BOOK_NAME_BY_ID)) {
@@ -161,6 +169,17 @@ class DBImplementation {
             return set.next() ? new Book(set.getInt(FIRST_ARGUMENT), set.getString(SECOND_ARGUMENT)) : null;
         } finally {
             ConnectionManager.closeResultSet(set);
+        }
+    }*/
+
+    private static void insert(String name, ContentSection section) throws SQLException {
+        if (get(name, section) == null) {
+            try (Connection connection = ConnectionManager.createConnection();
+                 PreparedStatement statement = connection.prepareStatement(section.getInsertionSQL())) {
+
+                statement.setString(FIRST_ARGUMENT, name);
+                statement.execute();
+            }
         }
     }
 

@@ -2,7 +2,7 @@ package dao;
 
 import beans.Author;
 import beans.Book;
-import interfaces.DAOout;
+import dao.interfaces.DAOout;
 
 import java.sql.SQLException;
 

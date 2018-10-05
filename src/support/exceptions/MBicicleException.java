@@ -1,4 +1,4 @@
-package exceptions;
+package support.exceptions;
 
 public class MBicicleException extends RuntimeException {
     public MBicicleException() {

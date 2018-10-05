@@ -1,11 +1,9 @@
 import dao.DBIn;
 import dao.DBOut;
-import interfaces.DAOin;
-import interfaces.DAOout;
+import dao.interfaces.DAOin;
+import dao.interfaces.DAOout;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
 
@@ -13,6 +11,7 @@ public class Main {
         try {
             DAOin in = new DBIn();
             DAOout out = new DBOut();
+
             /*in.addAuthor("Роберт Джордан", Arrays.asList(("Око мира"),
                     ("Великая охота"),
                     ("Возражденный дракон"),

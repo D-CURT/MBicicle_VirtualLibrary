@@ -1,4 +1,4 @@
-package interfaces;
+package dao.interfaces;
 
 import beans.Author;
 import beans.Book;
