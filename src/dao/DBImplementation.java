@@ -23,17 +23,6 @@ import static support.sections.ContentSection.BOOK;
 
 class DBImplementation {
 
-    /*private static ResultSet getResultSet(String sql) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(FIRST_ARGUMENT, name);
-
-            set = statement.executeQuery();
-        return set;
-    }*/
-
     private static Content get(String name, ContentSection section) throws SQLException {
         ResultSet set = null;
         List<String> contents = new ArrayList<>();
@@ -74,9 +63,10 @@ class DBImplementation {
                 requireNonNull(get(name, section)).getId()));
         List<Integer> listID = new ArrayList<>();
 
+        ContentSection contentSection = section == AUTHOR ? BOOK : AUTHOR;
         for (String s: list) {
-            insert(s, section == AUTHOR ? BOOK : AUTHOR);
-            listID.add(requireNonNull(get(s, section == AUTHOR ? BOOK : AUTHOR)).getId());
+            insert(s, contentSection);
+            listID.add(requireNonNull(get(s, contentSection)).getId());
         }
 
         toPair(one, listID, section);
@@ -93,18 +83,9 @@ class DBImplementation {
     }
 
     private static void toPair(List<Integer> authors, List<Integer> books, ContentSection section) throws SQLException {
-
-        if (section == AUTHOR) {
-            for (Integer id: books) {
-                insertPair(authors.get(0), id);
-            }
-        } else {
-            for (Integer id: authors) {
-                insertPair(books.get(0), id);
-            }
+        for (Integer id: section == AUTHOR ? books : authors) {
+            insertPair(section == AUTHOR ? authors.get(0) : books.get(0), id);
         }
-
-
     }
 
     private static List<Integer> fromPair(int id, String sgl) throws SQLException {
@@ -133,19 +114,6 @@ class DBImplementation {
         }
     }
 
-    /*private static Author getAuthorById(int id) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_AUTHOR_NAME_BY_ID)) {
-            statement.setInt(FIRST_ARGUMENT, id);
-            set = statement.executeQuery();
-            return set.next() ? new Author(set.getInt(FIRST_ARGUMENT),
-                    set.getString(SECOND_ARGUMENT)) : null;
-        } finally {
-            ConnectionManager.closeResultSet(set);
-        }
-    }*/
-
     private static String getContentByID(int id, String sql) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
@@ -159,19 +127,6 @@ class DBImplementation {
         }
     }
 
-    /*private static Book getBookByID(int id) throws SQLException {
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BOOK_NAME_BY_ID)) {
-
-            statement.setInt(FIRST_ARGUMENT, id);
-            set = statement.executeQuery();
-            return set.next() ? new Book(set.getInt(FIRST_ARGUMENT), set.getString(SECOND_ARGUMENT)) : null;
-        } finally {
-            ConnectionManager.closeResultSet(set);
-        }
-    }*/
-
     private static void insert(String name, ContentSection section) throws SQLException {
         if (get(name, section) == null) {
             try (Connection connection = ConnectionManager.createConnection();
@@ -182,28 +137,6 @@ class DBImplementation {
             }
         }
     }
-
-    /*private static void insertAuthor(String name) throws SQLException {
-        if (getAuthor(name) == null) {
-            try (Connection connection = ConnectionManager.createConnection();
-                 PreparedStatement statement = connection.prepareStatement(INSERT_AUTHOR)) {
-
-                statement.setString(FIRST_ARGUMENT, name);
-                statement.execute();
-            }
-        }
-    }
-
-    private static void insertBook(String name) throws SQLException {
-        if (getBook(name) == null) {
-            try (Connection connection = ConnectionManager.createConnection();
-                 PreparedStatement statement = connection.prepareStatement(INSERT_BOOK)) {
-
-                statement.setString(FIRST_ARGUMENT, name);
-                statement.execute();
-            }
-        }
-    }*/
 
     private static void insertPair(int a, int b) throws SQLException {
         if (noPair(a, b)) {
