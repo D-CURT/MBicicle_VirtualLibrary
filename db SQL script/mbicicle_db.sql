@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 04 2018 г., 17:12
+-- Время создания: Окт 05 2018 г., 21:40
 -- Версия сервера: 5.5.25
 -- Версия PHP: 5.3.13
 
@@ -29,20 +29,19 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `author` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `surname` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Дамп данных таблицы `author`
 --
 
-INSERT INTO `author` (`id`, `name`, `surname`) VALUES
-(1, 'Сергей', 'Лукьяненко'),
-(2, 'Ник', 'Перумов'),
-(6, 'Михаил', 'Королюк'),
-(13, 'Артем', 'Каменистый'),
-(14, 'Роберт', 'Джордан');
+INSERT INTO `author` (`id`, `name`) VALUES
+(2, 'Роберт Джордан'),
+(3, 'Дмитрий Рус'),
+(4, 'Сергей Шолохов'),
+(5, 'Артем Каменистый');
 
 -- --------------------------------------------------------
 
@@ -53,35 +52,40 @@ INSERT INTO `author` (`id`, `name`, `surname`) VALUES
 CREATE TABLE IF NOT EXISTS `book` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(70) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
 -- Дамп данных таблицы `book`
 --
 
 INSERT INTO `book` (`id`, `name`) VALUES
-(1, 'Конкуренты'),
-(2, 'Алмазный меч, Деревянный меч'),
-(3, 'Лабиринт отражений'),
-(4, 'Cпасти СССР'),
-(11, 'Практикантка'),
-(12, 'Самый странный нуб'),
-(13, 'Рай беспощадный'),
-(14, 'Око мира'),
-(15, 'Великая охота'),
-(16, 'Возражденный дракон'),
-(17, 'Восходящая тень'),
-(18, 'Огни небес'),
-(19, 'Властелин хаоса'),
-(20, 'Корона мечей'),
-(21, 'Путь кинжалов'),
-(22, 'Сердце зимы'),
-(23, 'Перекрестки сумерек'),
-(24, 'Нож сновидений'),
-(25, 'Грядущая буря'),
-(26, 'Башни полуночи'),
-(27, 'Память света');
+(1, 'Око мира'),
+(2, 'Великая охота'),
+(3, 'Возражденный дракон'),
+(4, 'Восходящая тень'),
+(5, 'Огни небес'),
+(6, 'Властелин хаоса'),
+(7, 'Корона мечей'),
+(8, 'Путь кинжалов'),
+(9, 'Сердце зимы'),
+(10, 'Перекрестки сумерек'),
+(11, 'Нож сновидений'),
+(12, 'Грядущая буря'),
+(13, 'Башни полуночи'),
+(14, 'Память света'),
+(15, 'Долг'),
+(16, 'Тихий дон'),
+(17, 'Практикантка'),
+(18, 'Рай беспощадный'),
+(19, 'Самый странный нуб'),
+(20, 'Срыв'),
+(21, 'Клан'),
+(22, 'Инферно'),
+(23, 'Битва'),
+(24, 'Война'),
+(25, 'Исход');
 
 -- --------------------------------------------------------
 
@@ -103,27 +107,31 @@ CREATE TABLE IF NOT EXISTS `books_authors` (
 --
 
 INSERT INTO `books_authors` (`id`, `idAuthor`, `idBook`) VALUES
-(1, 1, 1),
+(1, 2, 1),
 (2, 2, 2),
-(3, 1, 3),
-(4, 6, 4),
-(9, 13, 11),
-(10, 13, 12),
-(11, 13, 13),
-(12, 14, 14),
-(13, 14, 15),
-(14, 14, 16),
-(15, 14, 17),
-(16, 14, 18),
-(17, 14, 19),
-(18, 14, 20),
-(19, 14, 21),
-(20, 14, 22),
-(21, 14, 23),
-(22, 14, 24),
-(23, 14, 25),
-(24, 14, 26),
-(25, 14, 27);
+(3, 2, 3),
+(4, 2, 4),
+(5, 2, 5),
+(6, 2, 6),
+(7, 2, 7),
+(8, 2, 8),
+(9, 2, 9),
+(10, 2, 10),
+(11, 2, 11),
+(12, 2, 12),
+(13, 2, 13),
+(14, 2, 14),
+(15, 3, 15),
+(16, 4, 16),
+(17, 5, 17),
+(18, 5, 18),
+(19, 5, 19),
+(20, 3, 20),
+(21, 3, 21),
+(22, 3, 22),
+(23, 3, 23),
+(24, 3, 24),
+(25, 3, 25);
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -133,8 +141,8 @@ INSERT INTO `books_authors` (`id`, `idAuthor`, `idBook`) VALUES
 -- Ограничения внешнего ключа таблицы `books_authors`
 --
 ALTER TABLE `books_authors`
-  ADD CONSTRAINT `books_authors_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `author` (`id`),
-  ADD CONSTRAINT `books_authors_ibfk_2` FOREIGN KEY (`idBook`) REFERENCES `book` (`id`);
+  ADD CONSTRAINT `books_authors_ibfk_2` FOREIGN KEY (`idBook`) REFERENCES `book` (`id`),
+  ADD CONSTRAINT `books_authors_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `author` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -1,11 +1,11 @@
 package dao;
 
-import dao.interfaces.DAOin;
+import dao.interfaces.DAO_in;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class DBIn implements DAOin {
+public class DBIn implements DAO_in {
 
     @Override
     public boolean addAuthor(String name, List<String> books) throws SQLException {

@@ -1,7 +1,7 @@
 import dao.DBIn;
 import dao.DBOut;
-import dao.interfaces.DAOin;
-import dao.interfaces.DAOout;
+import dao.interfaces.DAO_in;
+import dao.interfaces.DAO_out;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,26 +13,17 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            DAOin in = new DBIn();
-            DAOout out = new DBOut();
+            DAO_in in = new DBIn();
+            DAO_out out = new DBOut();
 
-            /*in.addAuthor("Роберт Джордан", Arrays.asList(("Око мира"),
-                    ("Великая охота"),
-                    ("Возражденный дракон"),
-                    ("Восходящая тень"),
-                    ("Огни небес"),
-                    ("Властелин хаоса"),
-                    ("Корона мечей"),
-                    ("Путь кинжалов"),
-                    ("Сердце зимы"),
-                    ("Перекрестки сумерек"),
-                    ("Нож сновидений"),
-                    ("Грядущая буря"),
-                    ("Башни полуночи"),
-                    ("Память света")));*/
+            in.addAuthor("Дмитрий Рус", Arrays.asList(
+                    ("Инферно"),
+                    ("Битва"),
+                    ("Война"),
+                    ("Исход")));
             System.out.println(out.getAuthor("Роберт Джордан"));
             System.out.println(out.getBook("Практикантка"));
-            in.addBook("Долг", new ArrayList<>(Arrays.asList("Дмитрий Рус")));
+            in.addBook("Клан", new ArrayList<>(singletonList("Дмитрий Рус")));
             in.addAuthor("Сергей Шолохов", new ArrayList<>(singletonList("Тихий дон")));
         } catch (SQLException e) {
             e.printStackTrace();
