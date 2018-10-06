@@ -1,5 +1,7 @@
+import beans.Result;
 import dao.DB_in;
 import dao.DB_out;
+import support.sections.OperationSection;
 import support.sections.SQLSection;
 
 import java.util.ArrayList;
@@ -21,5 +23,7 @@ public class Main {
         DB_out daoOut = new DB_out();
         System.out.println(daoOut.apply("Роберт Джордан", SQLSection.AUTHOR));
         System.out.println(daoOut.apply("Практикантка", SQLSection.BOOK));
+        System.out.println(new Result("Срыв", daoOut.apply("Срыв", SQLSection.BOOK), OperationSection.GET_BOOK));
+        System.out.println(new Result("Роберт Джордан", daoOut.apply("Роберт Джордан", SQLSection.AUTHOR), OperationSection.GET_AUTHOR));
     }
 }

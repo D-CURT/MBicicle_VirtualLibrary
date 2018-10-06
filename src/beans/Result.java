@@ -3,15 +3,16 @@ package beans;
 import support.sections.OperationSection;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static support.constants.Constants.EMPTY;
 import static support.constants.Constants.LINE;
+import static support.sections.OperationSection.GET_AUTHOR;
+import static support.sections.OperationSection.GET_BOOK;
 
 public class Result {
     private InputHolder holder;
-    private StringBuilder builder;
     private Content content;
-    private boolean addResult;
+    private boolean addResult = false;
     private String error;
     private OperationSection section;
 
@@ -60,44 +61,49 @@ public class Result {
         return error != null;
     }
 
-    private void setBuilder() {
-        if (builder != null) builder.setLength(0);
-        else builder = new StringBuilder();
+    private StringBuilder drawList(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+        list.forEach(s -> sb.append(s).append(LINE));
+        return sb;
     }
 
-    private void drawList() {
-        holder.list.forEach(s -> builder.append(s).append(LINE));
-    }
-
-    private String getPrefix() {
-        setBuilder();
+    private StringBuilder getPrefix() {
+        StringBuilder sb = new StringBuilder();
         switch (section) {
-            case GET_AUTHOR: builder.append("Searching author by name: ")
-                                            .append(holder.name).toString();
-            case   GET_BOOK: builder.append("Searching book by name: ")
-                                            .append(holder.name).toString();
-            case   ADD_BOOK: builder.append("Adding book with name: ")
-                                            .append(holder.name).append(LINE)
-                                            .append(holder.list.size() > 1 ? "and authors:\n" : "and author: ");
-                                            drawList();
-            case ADD_AUTHOR: builder.append("Adding author with name: ")
-                                            .append(holder.name).append(LINE)
-                                            .append(holder.list.size() > 1 ? "and books:\n" : "and book: ");
-                                            drawList();
+            case GET_AUTHOR: sb.append("Searching author by name: ")
+                               .append(holder.name); break;
+            case   GET_BOOK: sb.append("Searching book by name: ")
+                               .append(holder.name); break;
+            case   ADD_BOOK: sb.append("Adding book with name: ")
+                               .append(holder.name).append(LINE)
+                               .append(holder.list.size() > 1 ? "and authors:\n" : "and author: ")
+                               .append(drawList(holder.list)); break;
+            case ADD_AUTHOR: sb.append("Adding author with name: ")
+                               .append(holder.name).append(LINE)
+                               .append(holder.list.size() > 1 ? "and books:\n" : "and book: ")
+                               .append(drawList(holder.list));
         }
-        return builder.toString();
+        return sb;
     }
 
     private String getBody() {
-        return "";
+        if (hasError()) return EMPTY;
+        if (content != null) {
+            return section == GET_AUTHOR ? "\nThe author wrote books:\n" + drawList(content.getList())
+                                         : "\nBook with such name have following authors:\n" + drawList(content.getList());
+        }
+        if (addResult) return "\nPassed successfully";
+        return section == GET_AUTHOR || section == GET_BOOK ? "\nNothing found"
+                                                            : "\nThe note already exist";
+
     }
 
     private String getSuffix() {
-        return "";
+        return hasError() ? " - " + error : EMPTY;
     }
 
     @Override
     public String toString() {
-        return "";
+        return String.valueOf(getPrefix()) + getBody() + getSuffix();
     }
 }
