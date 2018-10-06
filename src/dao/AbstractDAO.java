@@ -63,7 +63,6 @@ abstract class AbstractDAO {
             insertion = insert(s, SQLSection) ? ++insertion : insertion;
             listID.add(requireNonNull(get(s, SQLSection)).getId());
         }
-
         toPair(one, listID, sqlSection);
         return insertion != 0;
     }

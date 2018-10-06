@@ -17,7 +17,7 @@ public class Constants {
     public static final String FIND_AUTHOR_BY_BOOK = "SELECT idAuthor FROM books_authors WHERE idBook=?";
     public static final String FIND_BOOK_NAME_BY_ID = "SELECT name FROM book WHERE id=?";
     public static final String FIND_AUTHOR_NAME_BY_ID = "SELECT name FROM author WHERE id=?";
-    public static final String FIND_PAIR = "SELECT id FROM books_authors WHERE idAuthor=? AND idBook=?";
+    public static final String FIND_PAIR = "SELECT * FROM books_authors WHERE idAuthor=? AND idBook=?";
     //--------------------------------
 
     //_INSERT   ----------------------
