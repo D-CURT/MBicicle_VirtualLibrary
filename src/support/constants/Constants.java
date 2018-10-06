@@ -7,6 +7,7 @@ public class Constants {
     public static final String PASSWORD = "";
 
     public static final String EMPTY = "";
+    public static final String LINE = "\n";
 
     //===========   SQL   ============
     //_SELECT   ----------------------
