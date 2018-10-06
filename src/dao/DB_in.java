@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.DAO_inApplier;
-import support.exceptions.MBicicleException;
 import support.exceptions.MBicicleSQLException;
 import support.sections.SQLSection;
 
