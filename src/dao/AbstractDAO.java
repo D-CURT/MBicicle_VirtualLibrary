@@ -21,8 +21,9 @@ import static support.constants.Constants.SECOND_ARGUMENT;
 import static support.sections.SQLSection.AUTHOR;
 import static support.sections.SQLSection.BOOK;
 
-public abstract class AbstractDAO implements DAOApplier {
-    protected final Content get(String name, SQLSection sqlSection) throws SQLException {
+abstract class AbstractDAO {
+
+    final Content get(String name, SQLSection sqlSection) throws SQLException {
         ResultSet set = null;
         List<String> contents = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -50,20 +51,21 @@ public abstract class AbstractDAO implements DAOApplier {
         return null;
     }
 
-    protected final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
-        insert(name, sqlSection);
+    final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
+        int insertion = 0;
+        insertion = insert(name, sqlSection) ? ++insertion : insertion;
         List<Integer> one = new ArrayList<>(singletonList(
                 requireNonNull(get(name, sqlSection)).getId()));
         List<Integer> listID = new ArrayList<>();
 
         SQLSection SQLSection = sqlSection == AUTHOR ? BOOK : AUTHOR;
         for (String s: list) {
-            insert(s, SQLSection);
+            insertion = insert(s, SQLSection) ? ++insertion : insertion;
             listID.add(requireNonNull(get(s, SQLSection)).getId());
         }
 
         toPair(one, listID, sqlSection);
-        return true;
+        return insertion != 0;
     }
 
     private List<Integer> fromPair(int id, String sgl) throws SQLException {
@@ -111,15 +113,16 @@ public abstract class AbstractDAO implements DAOApplier {
         }
     }
 
-    private void insert(String name, SQLSection sqlSection) throws SQLException {
+    private boolean insert(String name, SQLSection sqlSection) throws SQLException {
         if (get(name, sqlSection) == null) {
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(sqlSection.getInsertionSQL())) {
 
                 statement.setString(FIRST_ARGUMENT, name);
                 statement.execute();
+                return true;
             }
-        }
+        } return false;
     }
 
     private void insertPair(int a, int b) throws SQLException {

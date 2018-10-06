@@ -1,25 +1,20 @@
 package dao;
 
-import beans.Result;
-import support.sections.OperationSection;
+import dao.interfaces.DAO_inApplier;
+import support.exceptions.MBicicleException;
+import support.exceptions.MBicicleSQLException;
+import support.sections.SQLSection;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static support.sections.SQLSection.AUTHOR;
-import static support.sections.SQLSection.BOOK;
-
-public class DB_in extends AbstractDAO {
+public class DB_in extends AbstractDAO implements DAO_inApplier {
     @Override
-    public Result apply(String name, List<String> list, OperationSection section) {
-        return null;
-    }
-
-    private boolean addAuthor(String name, List<String> bookNames) throws SQLException {
-        return add(name, bookNames, AUTHOR);
-    }
-
-    private boolean addBook(String name, List<String> authorNames) throws SQLException {
-        return add(name, authorNames, BOOK);
+    public boolean apply(String name, List<String> list, SQLSection sqlSection) {
+        try {
+            return add(name, list, sqlSection);
+        } catch (SQLException e) {
+            throw new MBicicleSQLException(e.getMessage());
+        }
     }
 }
