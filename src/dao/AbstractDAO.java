@@ -16,28 +16,13 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static support.constants.Constants.*;
+import static support.constants.Constants.INSERT_PAIR;
+import static support.constants.Constants.SECOND_ARGUMENT;
 import static support.sections.SQLSection.AUTHOR;
 import static support.sections.SQLSection.BOOK;
 
-public class DBImplementation {
-
-    public static Author getAuthor(String name) throws SQLException{
-        return (Author) get(name, AUTHOR);
-    }
-
-    public static Book getBook(String name) throws SQLException {
-        return (Book) get(name, BOOK);
-    }
-
-    public static boolean addAuthor(String name, List<String> bookNames) throws SQLException {
-        return add(name, bookNames, AUTHOR);
-    }
-
-    public static boolean addBook(String name, List<String> authorNames) throws SQLException {
-        return add(name, authorNames, BOOK);
-    }
-
-    private static Content get(String name, SQLSection sqlSection) throws SQLException {
+public abstract class AbstractDAO implements DAOApplier {
+    protected final Content get(String name, SQLSection sqlSection) throws SQLException {
         ResultSet set = null;
         List<String> contents = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
@@ -57,7 +42,7 @@ public class DBImplementation {
                 if (contents.size() == 0) contents = null;
 
                 return sqlSection == AUTHOR ? new Author(id, name, contents)
-                                         : new Book(id, name, contents);
+                        : new Book(id, name, contents);
             }
         } finally {
             ConnectionManager.closeResultSet(set);
@@ -65,7 +50,7 @@ public class DBImplementation {
         return null;
     }
 
-    private static boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
+    protected final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
         insert(name, sqlSection);
         List<Integer> one = new ArrayList<>(singletonList(
                 requireNonNull(get(name, sqlSection)).getId()));
@@ -81,13 +66,7 @@ public class DBImplementation {
         return true;
     }
 
-    private static void toPair(List<Integer> authors, List<Integer> books, SQLSection sqlSection) throws SQLException {
-        for (Integer id: sqlSection == AUTHOR ? books : authors) {
-            insertPair(sqlSection == AUTHOR ? authors.get(0) : books.get(0), id);
-        }
-    }
-
-    private static List<Integer> fromPair(int id, String sgl) throws SQLException {
+    private List<Integer> fromPair(int id, String sgl) throws SQLException {
         List<Integer> list = new ArrayList<>();
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
@@ -103,7 +82,13 @@ public class DBImplementation {
         }
     }
 
-    private static boolean noPair(int a, int b) throws SQLException {
+    private void toPair(List<Integer> authors, List<Integer> books, SQLSection sqlSection) throws SQLException {
+        for (Integer id: sqlSection == AUTHOR ? books : authors) {
+            insertPair(sqlSection == AUTHOR ? authors.get(0) : books.get(0), id);
+        }
+    }
+
+    private boolean noPair(int a, int b) throws SQLException {
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_PAIR)) {
 
@@ -113,7 +98,7 @@ public class DBImplementation {
         }
     }
 
-    private static String getContentByID(int id, String sql) throws SQLException {
+    private String getContentByID(int id, String sql) throws SQLException {
         ResultSet set = null;
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -126,7 +111,7 @@ public class DBImplementation {
         }
     }
 
-    private static void insert(String name, SQLSection sqlSection) throws SQLException {
+    private void insert(String name, SQLSection sqlSection) throws SQLException {
         if (get(name, sqlSection) == null) {
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(sqlSection.getInsertionSQL())) {
@@ -137,7 +122,7 @@ public class DBImplementation {
         }
     }
 
-    private static void insertPair(int a, int b) throws SQLException {
+    private void insertPair(int a, int b) throws SQLException {
         if (noPair(a, b)) {
             try (Connection connection = ConnectionManager.createConnection();
                  PreparedStatement statement = connection.prepareStatement(INSERT_PAIR)) {
