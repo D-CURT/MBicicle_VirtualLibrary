@@ -25,25 +25,19 @@ abstract class AbstractDAO {
 
     final Content get(String name, SQLSection sqlSection) throws SQLException {
         ResultSet set = null;
-        List<String> contents = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(sqlSection.getContentSQL())) {
 
             statement.setString(FIRST_ARGUMENT, name);
-
             set = statement.executeQuery();
 
             if (set.next()) {
                 int id = set.getInt(FIRST_ARGUMENT);
 
+                List<String> contentNames = getContentNamesByID(id, sqlSection.getContentNamesSQL());
 
-                for (Integer index: fromPair(id, sqlSection.getContentNamesSQL()))
-                    contents.add(getContentByID(index, sqlSection.getNameByIDSQL()));
-
-                if (contents.size() == 0) contents = null;
-
-                return sqlSection == AUTHOR ? new Author(id, name, contents)
-                        : new Book(id, name, contents);
+                return sqlSection == AUTHOR ? new Author(id, name, contentNames)
+                        : new Book(id, name, contentNames);
             }
         } finally {
             ConnectionManager.closeResultSet(set);
@@ -67,22 +61,6 @@ abstract class AbstractDAO {
         return insertion != 0;
     }
 
-    private List<Integer> fromPair(int id, String sgl) throws SQLException {
-        List<Integer> list = new ArrayList<>();
-        ResultSet set = null;
-        try (Connection connection = ConnectionManager.createConnection();
-             PreparedStatement statement = connection.prepareStatement(sgl)) {
-
-            statement.setInt(FIRST_ARGUMENT, id);
-            set = statement.executeQuery();
-            while (set.next())
-                list.add(set.getInt(FIRST_ARGUMENT));
-            return list;
-        } finally {
-            ConnectionManager.closeResultSet(set);
-        }
-    }
-
     private void toPair(List<Integer> authors, List<Integer> books, SQLSection sqlSection) throws SQLException {
         for (Integer id: sqlSection == AUTHOR ? books : authors) {
             insertPair(sqlSection == AUTHOR ? authors.get(0) : books.get(0), id);
@@ -99,14 +77,18 @@ abstract class AbstractDAO {
         }
     }
 
-    private String getContentByID(int id, String sql) throws SQLException {
+    private List<String> getContentNamesByID(int id, String sql) throws SQLException {
         ResultSet set = null;
+        List<String> content = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(FIRST_ARGUMENT, id);
             set = statement.executeQuery();
-            return set.next() ? set.getString(FIRST_ARGUMENT) : EMPTY;
+            while (set.next()) {
+                content.add(set.getString(FIRST_ARGUMENT));
+            }
+            return content;
         } finally {
             ConnectionManager.closeResultSet(set);
         }

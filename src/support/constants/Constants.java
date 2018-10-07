@@ -13,10 +13,8 @@ public class Constants {
     //_SELECT   ----------------------
     public static final String FIND_AUTHOR = "SELECT * FROM author WHERE name=?";
     public static final String FIND_BOOK = "SELECT * FROM book WHERE name=?";
-    public static final String FIND_BOOK_BY_AUTHOR = "SELECT idBook FROM books_authors WHERE idAuthor=?";
-    public static final String FIND_AUTHOR_BY_BOOK = "SELECT idAuthor FROM books_authors WHERE idBook=?";
-    public static final String FIND_BOOK_NAME_BY_ID = "SELECT name FROM book WHERE id=?";
-    public static final String FIND_AUTHOR_NAME_BY_ID = "SELECT name FROM author WHERE id=?";
+    public static final String FIND_BOOKS_BY_AUTHOR = "SELECT name FROM book WHERE id IN (SELECT idBook FROM books_authors WHERE idAuthor=?)";
+    public static final String FIND_AUTHORS_BY_BOOK = "SELECT name FROM author WHERE id IN (SELECT idAuthor FROM books_authors WHERE idBook=?)";
     public static final String FIND_PAIR = "SELECT * FROM books_authors WHERE idAuthor=? AND idBook=?";
     //--------------------------------
 
