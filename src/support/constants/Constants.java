@@ -27,7 +27,6 @@ public class Constants {
     //_INDEX   -----------------------
     public static final int FIRST_ARGUMENT = 1;
     public static final int SECOND_ARGUMENT = 2;
-    public static final int THIRD_ARGUMENT = 3;
     //--------------------------------
 
 }
