@@ -95,7 +95,6 @@ public class Result {
         if (addResult) return "\nPassed successfully\n";
         return section == GET_AUTHOR || section == GET_BOOK ? "\nNothing found\n"
                                                             : "\nThe notes already exist\n";
-
     }
 
     private String getSuffix() {
