@@ -1,7 +1,5 @@
 package dao;
 
-import beans.Author;
-import beans.Book;
 import beans.Content;
 import dao.interfaces.DAOApplier;
 import support.ConnectionManager;
@@ -47,8 +45,7 @@ abstract class AbstractDAO implements DAOApplier {
 
                 List<String> contentNames = getContentNamesByID(id, sqlSection.getContentNamesSQL());
 
-                return sqlSection == AUTHOR ? new Author(id, name, contentNames)
-                                            : new Book(id, name, contentNames);
+                return new Content(id, name, contentNames);
             }
         } finally {
             ConnectionManager.closeResultSet(set);
