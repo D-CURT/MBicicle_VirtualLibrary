@@ -18,8 +18,6 @@ public class Librarian {
         this.applier = applier;
     }
 
-
-
     public Result serve(String name, OperationSection section) {
         Content content;
         try {

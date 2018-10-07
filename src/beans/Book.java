@@ -44,13 +44,4 @@ public class Book implements Content {
     public List<String> getList() {
         return authors;
     }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", authors=" + authors +
-                '}';
-    }
 }

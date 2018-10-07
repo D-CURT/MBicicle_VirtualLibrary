@@ -35,9 +35,5 @@ public class Main {
 
         librarian = new Librarian(applier);
         System.out.println(librarian.serve("Практикантка", OperationSection.GET_BOOK));
-
-
-        /*System.out.println(new Result("Срыв", daoOut.apply("Срыв", SQLSection.BOOK), OperationSection.GET_BOOK));
-        System.out.println(new Result("Роберт Джордан", daoOut.apply("Роберт Джордан", SQLSection.AUTHOR), OperationSection.GET_AUTHOR));*/
     }
 }
