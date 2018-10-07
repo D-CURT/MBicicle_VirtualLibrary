@@ -4,7 +4,6 @@ import dao.interfaces.DAOApplier;
 import services.Librarian;
 import support.sections.OperationSection;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Collections.singletonList;
 
@@ -27,7 +26,7 @@ public class Main {
                 ("Исход")), OperationSection.ADD_AUTHOR));
 
         librarian = new Librarian(applier);
-        System.out.println(librarian.add("Срыв", new ArrayList<>(singletonList("Дмитрий Рус")), OperationSection.ADD_BOOK));
+        System.out.println(librarian.add("Срыв", singletonList("Дмитрий Рус"), OperationSection.ADD_BOOK));
 
         applier = new DB_out();
         librarian = new Librarian(applier);

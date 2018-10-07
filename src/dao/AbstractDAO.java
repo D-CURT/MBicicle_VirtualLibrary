@@ -10,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -57,7 +56,7 @@ abstract class AbstractDAO implements DAOApplier {
     final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
         int counter = 0;
         counter = insert(name, sqlSection) ? ++counter : counter;
-        List<Integer> l1 = Arrays.asList(requireNonNull(get(name, sqlSection)).getId());
+        List<Integer> l1 = singletonList(requireNonNull(get(name, sqlSection)).getId());
         List<Integer> l2 = new ArrayList<>();
 
         SQLSection localSec = sqlSection == AUTHOR ? BOOK : AUTHOR;
