@@ -92,9 +92,9 @@ public class Result {
             return section == GET_AUTHOR ? "\nThe author wrote books:\n" + drawList(content.getList())
                                          : "\nBook with such name have following authors:\n" + drawList(content.getList());
         }
-        if (addResult) return "\nPassed successfully";
-        return section == GET_AUTHOR || section == GET_BOOK ? "\nNothing found"
-                                                            : "\nThe note already exist";
+        if (addResult) return "\nPassed successfully\n";
+        return section == GET_AUTHOR || section == GET_BOOK ? "\nNothing found\n"
+                                                            : "\nThe notes already exist\n";
 
     }
 
