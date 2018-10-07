@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -56,22 +57,24 @@ abstract class AbstractDAO implements DAOApplier {
     final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
         int counter = 0;
         counter = insert(name, sqlSection) ? ++counter : counter;
-        int single = requireNonNull(get(name, sqlSection)).getId();
-        List<Integer> listID = new ArrayList<>();
+        List<Integer> l1 = Arrays.asList(requireNonNull(get(name, sqlSection)).getId());
+        List<Integer> l2 = new ArrayList<>();
 
         SQLSection localSec = sqlSection == AUTHOR ? BOOK : AUTHOR;
         for (String s: list) {
             counter = insert(s, localSec) ? ++counter : counter;
-            listID.add(requireNonNull(get(s, localSec)).getId());
+            l2.add(requireNonNull(get(s, localSec)).getId());
         }
-        toPair(single, listID, sqlSection);
+        toPair(l1, l2, sqlSection);
         return counter != 0;
     }
 
-    private void toPair(int single, List<Integer> list, SQLSection sqlSection) throws SQLException {
-        for (Integer id: list) {
-            if (sqlSection == AUTHOR) insertPair(single, id);
-            else insertPair(id, single);
+    private void toPair(List<Integer> l1, List<Integer> l2, SQLSection sqlSection) throws SQLException {
+        boolean arg1 = l1.size() >= l2.size();
+        for (Integer id: l2) {
+            if (sqlSection == AUTHOR) insertPair(l1.get(0), id);
+            else insertPair(id, l1.get(0));
+
         }
     }
 
