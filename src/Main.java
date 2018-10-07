@@ -1,9 +1,8 @@
-import beans.Result;
 import dao.DB_in;
 import dao.DB_out;
+import dao.interfaces.DAOApplier;
 import services.Librarian;
 import support.sections.OperationSection;
-import support.sections.SQLSection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,27 +12,29 @@ public class Main {
 
     public static void main(String[] args) {
         Librarian librarian;
+        DAOApplier applier = new DB_in();
 
-        librarian = new Librarian("Роберт Джордан", Arrays.asList(
+        librarian = new Librarian(applier);
+        System.out.println(librarian.serve("Роберт Джордан", Arrays.asList(
                 ("Око мира"),
-                ("Великая охота")), OperationSection.ADD_AUTHOR);
-        System.out.println(librarian.serve());
+                ("Великая охота")), OperationSection.ADD_AUTHOR));
 
-        librarian = new Librarian("Дмитрий Рус", Arrays.asList(
+        librarian = new Librarian(applier);
+        System.out.println(librarian.serve("Дмитрий Рус", Arrays.asList(
                 ("Инферно"),
                 ("Битва"),
                 ("Война"),
-                ("Исход")), OperationSection.ADD_AUTHOR);
-        System.out.println(librarian.serve());
+                ("Исход")), OperationSection.ADD_AUTHOR));
 
-        librarian = new Librarian("Срыв", new ArrayList<>(singletonList("Дмитрий Рус")), OperationSection.ADD_BOOK);
-        System.out.println(librarian.serve());
+        librarian = new Librarian(applier);
+        System.out.println(librarian.serve("Срыв", new ArrayList<>(singletonList("Дмитрий Рус")), OperationSection.ADD_BOOK));
 
-        librarian = new Librarian("Роберт Джордан", OperationSection.GET_AUTHOR);
-        System.out.println(librarian.serve());
+        applier = new DB_out();
+        librarian = new Librarian(applier);
+        System.out.println(librarian.serve("Роберт Джордан", OperationSection.GET_AUTHOR));
 
-        librarian = new Librarian("Практикантка", OperationSection.GET_BOOK);
-        System.out.println(librarian.serve());
+        librarian = new Librarian(applier);
+        System.out.println(librarian.serve("Практикантка", OperationSection.GET_BOOK));
 
 
         /*System.out.println(new Result("Срыв", daoOut.apply("Срыв", SQLSection.BOOK), OperationSection.GET_BOOK));

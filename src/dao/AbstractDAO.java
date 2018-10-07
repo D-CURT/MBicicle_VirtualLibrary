@@ -3,6 +3,7 @@ package dao;
 import beans.Author;
 import beans.Book;
 import beans.Content;
+import dao.interfaces.DAOApplier;
 import support.ConnectionManager;
 import support.sections.SQLSection;
 
@@ -21,7 +22,17 @@ import static support.constants.Constants.SECOND_ARGUMENT;
 import static support.sections.SQLSection.AUTHOR;
 import static support.sections.SQLSection.BOOK;
 
-abstract class AbstractDAO {
+abstract class AbstractDAO implements DAOApplier {
+
+    @Override
+    public boolean apply(String name, List<String> list, SQLSection sqlSection) {
+        return false;
+    }
+
+    @Override
+    public Content apply(String name, SQLSection sqlSection) {
+        return null;
+    }
 
     final Content get(String name, SQLSection sqlSection) throws SQLException {
         ResultSet set = null;
