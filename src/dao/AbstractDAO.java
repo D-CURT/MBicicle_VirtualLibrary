@@ -23,7 +23,7 @@ import static support.sections.SQLSection.BOOK;
 abstract class AbstractDAO implements DAOApplier {
 
     @Override
-    public boolean apply(String name, List<String> list, SQLSection sqlSection) {
+    public boolean adding(String name, List<String> list, SQLSection sqlSection) {
         return false;
     }
 
@@ -56,22 +56,22 @@ abstract class AbstractDAO implements DAOApplier {
     final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
         int counter = 0;
         counter = insert(name, sqlSection) ? ++counter : counter;
-        List<Integer> one = new ArrayList<>(singletonList(
-                requireNonNull(get(name, sqlSection)).getId()));
+        int single = requireNonNull(get(name, sqlSection)).getId();
         List<Integer> listID = new ArrayList<>();
 
-        SQLSection SQLSection = sqlSection == AUTHOR ? BOOK : AUTHOR;
+        SQLSection localSec = sqlSection == AUTHOR ? BOOK : AUTHOR;
         for (String s: list) {
-            counter = insert(s, SQLSection) ? ++counter : counter;
-            listID.add(requireNonNull(get(s, SQLSection)).getId());
+            counter = insert(s, localSec) ? ++counter : counter;
+            listID.add(requireNonNull(get(s, localSec)).getId());
         }
-        toPair(one, listID, sqlSection);
+        toPair(single, listID, sqlSection);
         return counter != 0;
     }
 
-    private void toPair(List<Integer> authors, List<Integer> books, SQLSection sqlSection) throws SQLException {
-        for (Integer id: sqlSection == AUTHOR ? books : authors) {
-            insertPair(sqlSection == AUTHOR ? authors.get(0) : books.get(0), id);
+    private void toPair(int single, List<Integer> list, SQLSection sqlSection) throws SQLException {
+        for (Integer id: list) {
+            if (sqlSection == AUTHOR) insertPair(single, id);
+            else insertPair(id, single);
         }
     }
 

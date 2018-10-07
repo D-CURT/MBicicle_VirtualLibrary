@@ -18,7 +18,7 @@ public class Librarian {
         this.applier = applier;
     }
 
-    public Result serve(String name, OperationSection section) {
+    public Result get(String name, OperationSection section) {
         Content content;
         try {
             content = applier.apply(name, section.getSqlSection());
@@ -28,10 +28,10 @@ public class Librarian {
         }
     }
 
-    public Result serve(String name, List<String> list, OperationSection section) {
+    public Result add(String name, List<String> list, OperationSection section) {
         boolean addingResult;
         try {
-            addingResult = applier.apply(name, list, section.getSqlSection());
+            addingResult = applier.adding(name, list, section.getSqlSection());
             return new Result(name, list, addingResult, section);
         } catch (MBicicleException e) {
             return new Result(name, list, e.getMessage(), section);
