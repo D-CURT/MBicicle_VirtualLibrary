@@ -28,10 +28,10 @@ public class Librarian {
         }
     }
 
-    public Result add(String name, List<String> list, OperationSection section) {
+    public Result add(String name, List<String> tiedNames, OperationSection section) {
         boolean addingResult;
         try {
-            addingResult = applier.adding(name, list, section.getSqlSection());
+            addingResult = applier.adding(name, tiedNames, section.getSqlSection());
             return new Result(addingResult, section);
         } catch (MBicicleException e) {
             return new Result(e.getMessage(), section);

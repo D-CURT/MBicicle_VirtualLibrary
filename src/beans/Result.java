@@ -36,15 +36,15 @@ public class Result {
     }
 
     private String drawList(List<String> list) {
-        StringBuilder sb = new StringBuilder(LINE);
-        list.forEach(s -> sb.append(s).append(LINE));
+        StringBuilder sb = new StringBuilder();
+        list.forEach(s -> sb.append(s).append(list.size() > 1 ? LINE : EMPTY));
         return sb.toString();
     }
 
     private String getBody() {
         if (hasError()) return EMPTY;
         if (content != null) {
-            return drawList(content.getList());
+            return drawList(content.getTiedNames());
         }
         if (addResult) return "Data added";
         return section.getGroup().equals("get") ? "Nothing found"

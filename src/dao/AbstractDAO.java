@@ -22,7 +22,7 @@ import static support.sections.SQLSection.BOOK;
 abstract class AbstractDAO implements DAOApplier {
 
     @Override
-    public boolean adding(String name, List<String> list, SQLSection sqlSection) {
+    public boolean adding(String name, List<String> tiedNames, SQLSection sqlSection) {
         return false;
     }
 
@@ -42,7 +42,7 @@ abstract class AbstractDAO implements DAOApplier {
             if (set.next()) {
                 int id = set.getInt(FIRST_ARGUMENT);
 
-                List<String> contentNames = getContentNamesByID(id, sqlSection.getContentNamesSQL());
+                List<String> contentNames = getTiedNamesByID(id, sqlSection.getContentNamesSQL());
 
                 return new Content(id, name, contentNames);
             }
@@ -55,16 +55,20 @@ abstract class AbstractDAO implements DAOApplier {
     final boolean add(String name, List<String> list, SQLSection sqlSection) throws SQLException {
         int counter = 0;
         counter = insert(name, sqlSection) ? ++counter : counter;
-        int single = requireNonNull(get(name, sqlSection)).getId();
-        List<Integer> innerList = new ArrayList<>();
+        int single = getContentID(name, sqlSection);
+        List<Integer> tiedList = new ArrayList<>();
 
         SQLSection localSec = sqlSection == AUTHOR ? BOOK : AUTHOR;
         for (String s: list) {
             counter = insert(s, localSec) ? ++counter : counter;
-            innerList.add(requireNonNull(get(s, localSec)).getId());
+            tiedList.add(getContentID(s, localSec));
         }
-        toPair(single, innerList, sqlSection);
+        toPair(single, tiedList, sqlSection);
         return counter != 0;
+    }
+
+    private int getContentID(String name, SQLSection section) throws SQLException {
+        return requireNonNull(get(name, section)).getId();
     }
 
     private void toPair(int single, List<Integer> list, SQLSection sqlSection) throws SQLException {
@@ -84,7 +88,7 @@ abstract class AbstractDAO implements DAOApplier {
         }
     }
 
-    private List<String> getContentNamesByID(int id, String sql) throws SQLException {
+    private List<String> getTiedNamesByID(int id, String sql) throws SQLException {
         ResultSet set = null;
         List<String> content = new ArrayList<>();
         try (Connection connection = ConnectionManager.createConnection();

@@ -8,9 +8,9 @@ import java.util.List;
 
 public class DB_in extends AbstractDAO {
     @Override
-    public boolean adding(String name, List<String> list, SQLSection sqlSection) {
+    public boolean adding(String name, List<String> tiedNames, SQLSection sqlSection) {
         try {
-            return add(name, list, sqlSection);
+            return add(name, tiedNames, sqlSection);
         } catch (SQLException e) {
             throw new MBicicleSQLException(e.getMessage());
         }

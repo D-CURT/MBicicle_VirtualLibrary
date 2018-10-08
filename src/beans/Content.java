@@ -5,7 +5,7 @@ import java.util.List;
 public class Content {
     private int id;
     private String name;
-    private List<String> list;
+    private List<String> tiedNames;
 
     public Content() {
     }
@@ -15,10 +15,10 @@ public class Content {
         this.name = name;
     }
 
-    public Content(int id, String name, List<String> list) {
+    public Content(int id, String name, List<String> tiedNames) {
         this.id = id;
         this.name = name;
-        this.list = list;
+        this.tiedNames = tiedNames;
     }
 
     public int getId() {
@@ -29,7 +29,7 @@ public class Content {
         return name;
     }
 
-    public List<String> getList() {
-        return list;
+    public List<String> getTiedNames() {
+        return tiedNames;
     }
 }
