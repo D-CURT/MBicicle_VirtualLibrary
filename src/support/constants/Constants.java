@@ -28,5 +28,4 @@ public class Constants {
     public static final int FIRST_ARGUMENT = 1;
     public static final int SECOND_ARGUMENT = 2;
     //--------------------------------
-
 }
