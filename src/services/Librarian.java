@@ -22,9 +22,9 @@ public class Librarian {
         Content content;
         try {
             content = applier.apply(name, section.getSqlSection());
-            return new Result(name, content, section);
+            return new Result(content, section);
         } catch (MBicicleException e) {
-            return new Result(name, e.getMessage(), section);
+            return new Result(e.getMessage(), section);
         }
     }
 
@@ -32,9 +32,9 @@ public class Librarian {
         boolean addingResult;
         try {
             addingResult = applier.adding(name, list, section.getSqlSection());
-            return new Result(name, list, addingResult, section);
+            return new Result(addingResult, section);
         } catch (MBicicleException e) {
-            return new Result(name, list, e.getMessage(), section);
+            return new Result(e.getMessage(), section);
         }
     }
 }
