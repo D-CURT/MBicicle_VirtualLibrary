@@ -1,6 +1,6 @@
 package dao;
 
-import support.exceptions.MBicicleSQLException;
+import support.exceptions.MBicycleSQLException;
 import support.sections.SQLSection;
 
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ public class DB_in extends AbstractDAO {
         try {
             return add(name, tiedNames, sqlSection);
         } catch (SQLException e) {
-            throw new MBicicleSQLException(e.getMessage());
+            throw new MBicycleSQLException(e.getMessage());
         }
     }
 }

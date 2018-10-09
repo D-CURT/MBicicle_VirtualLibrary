@@ -3,7 +3,7 @@ package services;
 import beans.Content;
 import beans.Result;
 import dao.interfaces.DAOApplier;
-import support.exceptions.MBicicleException;
+import support.exceptions.MBicycleException;
 import support.sections.OperationSection;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class Librarian {
         try {
             content = applier.apply(name, section.getSqlSection());
             return new Result(content, section);
-        } catch (MBicicleException e) {
+        } catch (MBicycleException e) {
             return new Result(e.getMessage(), section);
         }
     }
@@ -33,7 +33,7 @@ public class Librarian {
         try {
             addingResult = applier.adding(name, tiedNames, section.getSqlSection());
             return new Result(addingResult, section);
-        } catch (MBicicleException e) {
+        } catch (MBicycleException e) {
             return new Result(e.getMessage(), section);
         }
     }

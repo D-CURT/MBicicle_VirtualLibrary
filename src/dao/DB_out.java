@@ -1,7 +1,7 @@
 package dao;
 
 import beans.Content;
-import support.exceptions.MBicicleSQLException;
+import support.exceptions.MBicycleSQLException;
 import support.sections.SQLSection;
 
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ public class DB_out extends AbstractDAO {
         try {
             return get(name, sqlSection);
         } catch (SQLException e) {
-            throw new MBicicleSQLException(e.getMessage());
+            throw new MBicycleSQLException(e.getMessage());
         }
     }
 }
